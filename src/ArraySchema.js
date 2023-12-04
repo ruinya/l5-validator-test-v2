@@ -1,25 +1,23 @@
-import _ from 'lodash';
-
 export default class ArraySchema {
-  validators = [(value) => Array.isArray(value)];
-
-  isValid(array) {
-    return this.validators.every((validator) => validator(array));
-  }
-
-  maxDepth(max) {
-    const validator = (values) => {
-      const iter = (element, depth = -1) => {
-        if (!Array.isArray(element)) {
-          return depth;
-        }
-        const result = element.map((value) => iter(value, depth + 1));
-        return _.flattenDeep(result);
+    validators = [(value) => Array.isArray(value)];
+  
+    constructor(newValidators) {
+      if (newValidators) this.validators = newValidators;
+    }
+  
+    isValid(value) {
+      return this.validators.every((validator) => validator(value));
+    }
+  
+    maxDepth(value) {
+      const validator = (array) => {
+        const getMaxDeep = (arr, deep = 0) => {
+          if (arr.length === 0) return deep;
+          const deeps = arr.map((val) => (Array.isArray(val) ? getMaxDeep(val, deep + 1) : deep));
+          return Math.max(...deeps);
+        };
+        return getMaxDeep(array) <= value;
       };
-      return iter(values).every((val) => val <= max);
-    };
-
-    this.validators.push(validator);
-    return this;
-  }
+      return new ArraySchema([...this.validators, validator]);
+    }
 }
