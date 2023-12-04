@@ -1,3 +1,9 @@
-import Validator from './src/Validator.js';
+import StringSchema from './src/StringSchema.js';
+
+class Validator {
+    string() {
+        return new StringSchema();
+    }
+}
 
 export default Validator;
