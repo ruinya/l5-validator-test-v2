@@ -7,7 +7,7 @@ class Validator {
     }
 
     array() {
-        return new ArraySchema([(value) => Array.isArray(value)]);
+        return new ArraySchema();
     }
 }
 
